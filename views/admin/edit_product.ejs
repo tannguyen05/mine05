@@ -1,0 +1,129 @@
+<% include ../layouts/admin_header.ejs %>
+    <h2 class="page-title">Edit a product</h2>
+    <a href="/admin/products" class="btn btn-primary" style="margin: 20px 0 20px 0;">List product</a>
+    <% if(errors.length>0){ %>
+        <% errors.forEach((err)=>{%>
+            <div class="alert alert-danger"><%= err.msg %></div>
+        <% }) %>
+    <% } %>
+
+    <% if (message.length > 0) { %>
+        <div class="alert alert-danger"><%=message[0] %></div>
+    <% } %>
+
+    <div id="notice">
+    <% if (success.length > 0) { %>
+        <div class="alert alert-success"><%=success[0] %></div>
+    <% } %>
+    </div>
+    <script>
+        setTimeout(()=>{
+            document.getElementById("notice").innerHTML="";
+            },2000);
+    </script>
+
+    <% if (product) { %>
+        <form action="/admin/update-product/<%= product._id %>" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Name:</label>
+                <input type="text" name="title" class="form-control" placeholder="Title" value="<%= product.title %>" autocomplete="off" id="title">
+            </div>
+            <div class="form-group">
+                <label for="desc">Description:</label>
+                <textarea name="desc" cols="30" rows="5" class="form-control" placeholder="Description" id="desc"><%= product.desc %></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cat">Category:</label>
+                <select name="category" class="form-control" id="cat">
+                        <% if(categories){ %>
+                            <% categories.forEach((category)=>{ %>
+                                <% var selected = category.slug == product.category ? 'selected' : '' %>
+                                <option value="<%= category.slug %>" <%= selected %>><%= category.title %></option>
+                            <% }) %>
+                        <% } %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="text" name="price" class="form-control" placeholder="Price" value="<%= parseFloat(product.price).toFixed(2) %>" autocomplete="off" id="price">
+            </div>
+            <div class="form-group">
+                <label for="">Current Image:</label><br />
+                <% if (product.image == "") { %>
+                    <img src="/images/noimage.png" alt="noimage" width="100px" height="100px">
+                <% }else{ %>
+                    <img src="/product_images/<%= product._id %>/<%= product.image %>" alt="current_images" width="200px" height="150px">                <% }%>
+            </div>
+            <div class="form-group">
+                <label for="img">Upload Image:</label>
+                <input type="file" name="image" class="form-control-file border" id="img" onchange="onFileSelected(event)">
+                <img src="#" alt="" id="imgPreview">
+            </div>
+            <input type="hidden" name="productImg" value="<%= product.image %>">
+            <input type="submit" class="btn btn-submit" value="Update">
+        </form>
+        <hr>
+        <h3 class="page-header">Gallery</h3>
+        <hr>
+        <ul class="gallery">
+            <% if(galleryImages){ %>
+                <% galleryImages.forEach((file)=>{ %>
+                    <% if(file != "thumbs"){ %>
+                    <li style="display: inline-block; margin: 20px; ">
+                        <img src="/product_images/<%= product._id %>/gallery/thumbs/<%= file %>">
+                        <br>
+                        <a href="/admin/delete-image/<%= file %>?id=<%= product._id %>">
+                            <button type="submit" class="btn btn-outline-primary" style="margin: 10px 0 0 15px;" onclick="return confirm('Do you want delete this image?')">
+                                Delete
+                            </button>
+                        </a>
+                    </li>
+                    <% } %>
+                <% }) %>
+            <% } %>
+        </ul>
+
+        <br><br>
+
+        <form action="/admin/product-gallery/<%= product._id %>" method="post" enctype="multipart/form-data" class="dropzone" id="myDropzone">
+            <div class="fallback">
+                <input name="file" type="file" multiple />
+            </div>
+        </form>
+
+    <% } %>
+
+    <!-- dropzone -->
+    <script src="/js/lib/dropzone.js"></script>
+    <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+
+    <!-- load image selected -->
+    <script>
+        function onFileSelected(event) {
+            var selectedFile = event.target.files[0];
+            var reader = new FileReader();
+
+            var imgtag = document.getElementById("imgPreview");
+            imgtag.title = selectedFile.name;
+
+            reader.onload = function(event) {
+                imgtag.src = event.target.result;
+            };
+
+            reader.readAsDataURL(selectedFile);
+        }
+
+        //Dropzone config
+
+        Dropzone.options.myDropzone = {
+            acceptedFiles: "image/*",
+            init: function(){   //when done
+                this.on("queuecomplete", function(file){
+                    setTimeout(function(){
+                        location.reload();
+                    }, 3000);
+                })
+            }   
+        }
+    </script>
+<% include ../layouts/admin_footer.ejs %>

@@ -1,0 +1,48 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= Title %></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="/favicon/favicon.ico"/>
+
+</head>
+<body>
+    <div style="margin: 20px auto;padding: 10px; width: 30%; background-color: cornsilk;">
+        <h3 class="alert alert-primary">Log In</h3>
+        <% if(errors.length>0){ %>
+            <% errors.forEach((err)=>{%>
+            <div class="alert alert-danger"><%= err.msg %></div>
+            <% }) %>
+        <% } %>
+        <div id="notice">
+            <% if (signupMess.length > 0) { %>
+            <div class="alert alert-success"><%= signupMess[0] %></div>
+            <% } %>
+        </div>
+        <script>
+            setTimeout(()=>{
+                document.getElementById("notice").innerHTML="";
+            },3000);
+        </script>
+
+        <form action="/signup" method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="pwd">Password:</label>
+                <input type="password" class="form-control" id="pwd" name="password", autocomplete="off">
+            </div>
+            <div align="center"><button type="submit" class="btn btn-primary">Log In</button></div>
+        </form>
+        <hr>
+
+        <p>Need an account? <a href="/signup/account">Signup</a></p>
+        <p>Or go <a href="/">home</a>.</p>
+    </div>
+</body>
+</html> -->

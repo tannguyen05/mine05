@@ -1,0 +1,85 @@
+<% include ../layouts/header.ejs %>
+<h3>Shopping Bag</h3>
+<% if( cart !== undefined){ %>
+<table class="table">
+	<thead>
+		<tr>
+			<th colspan="5">
+				<h5 class="text-muted">Products</h5>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% let total = 0, price = 0 %>
+		<% cart.forEach((c)=>{ %>
+		<tr class="text-center">
+			<td width="5%">
+				<a href="/cmscart/cart/update/<%= c.name %>?action=clear">
+					<img src="/images/delete_icon.png" style="width: 20px; height: 20px">
+				</a>
+			</td>
+			<td>
+				<img src="<%= c.image %>" alt="product" style="width: 50px; height: 50px">
+			</td>
+			<td>
+				<%= c.name %>
+			</td>
+			<td>
+				<a href="/cmscart/cart/update/<%= c.name %>?action=minus" style="text-decoration: none; margin: 10px;" class="text-center">
+					<button class="btn btn-default btn-sm" style="width: 25px; margin: 0; padding: 5px;">-</button>
+				</a>
+				<%= c.quantity %>
+				<a href="/cmscart/cart/update/<%= c.name %>?action=add" style="text-decoration: none; margin: 10px;" class="text-center">
+					<button class="btn btn-default btn-sm" style="width: 25px; margin: 0; padding: 5px">+</button>
+				</a>
+			</td>
+			<td>
+				<% price = c.quantity*(parseFloat(c.price).toFixed(2)) %>
+				$<%= parseFloat(price).toFixed(2) %>
+				<% total += parseInt(c.quantity)*parseFloat(c.price).toFixed(2); %>
+			</td>
+		</tr>
+		<% }) %>
+		<tr>
+			<td colspan="5" align="right">
+				<span class="text-danger">Total:</span> 
+				<span class="text-success">$<%= parseFloat(total).toFixed(2); %></span>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div style="float: left">
+	<a href="/cmscart/cart/clear">
+		<button class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to clear?')">Clear</button>
+	</a>
+</div>
+<!-- paypal -->
+<div style="float: right">
+	<form id="target" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<input type="hidden" name="cmd" value="_cart">
+		<input type="hidden" name="upload" value="1">
+		<input type="hidden" name="business" value="seller@dezignerfotos.com">
+		<% cart.map((item, index)=>{ %>
+		<input type="hidden" name="item_name_<%= index+1 %>" value="<%= item.name %>">
+		<input type="hidden" name="amount_<%= index+1 %>" value="<%= item.price %>">
+		<input type="hidden" name="quantity_<%= index+1 %>" value="<%= item.quantity %>">
+		<% }) %>
+		<input type="submit" class="btn btn-primary"  id="buynow" value="Buy now!">
+	</form>
+</div>
+<% }else{ %>
+<p class="text-muted text-center">Your cart is empty!</p>
+<% } %>
+<script>
+	$(document).ready(function(){
+		$("#buynow").click(function(e){
+			e.preventDefault();
+			//ajax
+			$.get("/cmscart/cart/buynow", function(){
+				$(".bg-load").show();
+				$( "#target" ).submit();
+			})
+		});
+	});
+</script>
+<% include ../layouts/footer.ejs %>

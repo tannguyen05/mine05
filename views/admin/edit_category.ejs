@@ -1,0 +1,24 @@
+<% include ../layouts/admin_header.ejs %>
+    <h2 class="page-title">Edit category</h2>
+    <a href="/admin/categories" class="btn btn-primary" style="margin: 20px 0 20px 0;">List page</a>
+    <% if(errors.length>0){ %>
+        <% errors.forEach((err)=>{%>
+            <div class="alert alert-danger"><%= err.msg %></div>
+        <% }) %>
+    <% } %>
+
+    <% if (message.length > 0) { %>
+        <div class="alert alert-danger"><%=message[0] %></div>
+    <% } %>
+
+    <% if (category) { %>
+        <form action="/admin/update-category/<%= category._id%>" method="POST">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" class="form-control" placeholder="Title" autocomplete="off" value="<%= category.title%>">
+            </div>
+            <input type="submit" class="btn btn-submit" value="Update">
+        </form>
+    <% }%>
+    
+<% include ../layouts/admin_footer.ejs %>
